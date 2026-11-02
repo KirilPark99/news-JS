@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -10,13 +11,18 @@ const baseConfig = {
     module: {
         rules: [
             {
+                test: /\.ts$/i,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
+            {
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
             },
         ],
     },
     resolve: {
-        extensions: ['.js'],
+        extensions: ['.ts', '.js'],
     },
     output: {
         filename: 'index.js',
@@ -36,5 +42,11 @@ module.exports = ({ mode }) => {
     const isProductionMode = mode === 'prod';
     const envConfig = isProductionMode ? require('./webpack.prod.config') : require('./webpack.dev.config');
 
-    return merge(baseConfig, envConfig);
+    return merge(baseConfig, envConfig, {
+        plugins: [
+            new webpack.DefinePlugin({
+                __USE_API_MOCKS__: JSON.stringify(!isProductionMode),
+            }),
+        ],
+    });
 };
