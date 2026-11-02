@@ -11,10 +11,6 @@ class Loader {
     private makeUrl(request: ApiRequest): string {
         const url = new URL(request.endpoint, this.baseLink);
 
-        if (!__USE_API_MOCKS__) {
-            url.searchParams.set('apiKey', __NEWS_API_KEY__);
-        }
-
         if (request.options?.sources) {
             url.searchParams.set('sources', request.options.sources);
         }
@@ -31,7 +27,8 @@ class Loader {
     }
 
     private load<T extends ApiResponse>(request: ApiRequest, callback: ApiCallback<T>, onError: () => void): void {
-        fetch(this.makeUrl(request), { method: RequestMethod.Get })
+        const headers: HeadersInit = __USE_API_MOCKS__ ? {} : { 'X-Api-Key': __NEWS_API_KEY__ };
+        fetch(this.makeUrl(request), { method: RequestMethod.Get, headers })
             .then((response) => this.errorHandler(response))
             .then((response) => response.json() as Promise<T>)
             .then((data) => {

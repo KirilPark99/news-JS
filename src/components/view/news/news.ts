@@ -13,6 +13,11 @@ class News {
         const fragment = document.createDocumentFragment();
         const articles = data.slice(0, 10);
 
+        if (articles.length === 0) {
+            newsContainer.textContent = 'No stories were found for this source.';
+            return;
+        }
+
         articles.forEach((article) => {
             const newsClone = template.content.cloneNode(true) as DocumentFragment;
             const image = newsClone.querySelector<HTMLElement>('.news__meta-photo')!;

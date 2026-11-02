@@ -11,6 +11,7 @@ const code = ts.transpileModule(source, {
 async function checkLoader(useMocks) {
     const exports = {};
     let requestedUrl = '';
+    let requestedHeaders = {};
     let shouldFail = false;
     const context = {
         exports,
@@ -19,8 +20,9 @@ async function checkLoader(useMocks) {
         __NEWS_API_KEY__: 'test-key',
         URL,
         console: { error: () => {} },
-        fetch: async (url) => {
+        fetch: async (url, options) => {
             requestedUrl = url;
+            requestedHeaders = options.headers;
             return shouldFail
                 ? { ok: false, status: 500, statusText: 'Error' }
                 : { ok: true, json: async () => ({ status: 'ok', articles: [] }) };
@@ -42,7 +44,8 @@ async function checkLoader(useMocks) {
     await new Promise((resolve) => setImmediate(resolve));
     const url = new URL(requestedUrl);
     assert.equal(url.searchParams.get('sources'), 'bbc & news');
-    assert.equal(url.searchParams.get('apiKey'), useMocks ? null : 'test-key');
+    assert.equal(url.searchParams.get('apiKey'), null);
+    assert.equal(requestedHeaders['X-Api-Key'], useMocks ? undefined : 'test-key');
     assert.equal(success, true);
     assert.equal(failed, false);
 
@@ -60,7 +63,24 @@ async function checkLoader(useMocks) {
     assert.equal(failed, true);
 }
 
+function checkEmptyNews() {
+    const newsSource = fs.readFileSync('src/components/view/news/news.ts', 'utf8');
+    const newsCode = ts.transpileModule(newsSource, {
+        compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
+    }).outputText;
+    const exports = {};
+    const container = { textContent: '' };
+    const document = {
+        querySelector: (selector) => (selector === '#newsItemTemp' ? {} : container),
+        createDocumentFragment: () => ({}),
+    };
+    vm.runInNewContext(newsCode, { exports, document, require: () => ({}) });
+    new exports.default().draw([]);
+    assert.equal(container.textContent, 'No stories were found for this source.');
+}
+
 (async () => {
+    checkEmptyNews();
     await checkLoader(true);
     await checkLoader(false);
     console.log('Loader checks passed');

@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+require('dotenv').config({ quiet: true });
 
 const baseConfig = {
     entry: path.resolve(__dirname, './src/index.ts'),
@@ -38,13 +39,14 @@ const baseConfig = {
 
 module.exports = ({ mode }) => {
     const isProductionMode = mode === 'prod';
+    const useMocks = !process.env.NEWS_API_KEY || process.env.USE_API_MOCKS === 'true';
     const envConfig = isProductionMode ? require('./webpack.prod.config') : require('./webpack.dev.config');
 
     return merge(baseConfig, envConfig, {
         plugins: [
             new webpack.DefinePlugin({
-                __USE_API_MOCKS__: JSON.stringify(!isProductionMode || !process.env.NEWS_API_KEY),
-                __NEWS_API_KEY__: JSON.stringify(isProductionMode ? process.env.NEWS_API_KEY || '' : ''),
+                __USE_API_MOCKS__: JSON.stringify(useMocks),
+                __NEWS_API_KEY__: JSON.stringify(useMocks ? '' : process.env.NEWS_API_KEY),
             }),
         ],
     });
