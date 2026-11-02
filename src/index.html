@@ -1,49 +1,119 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>NewsPortal</title>
+        <meta name="theme-color" content="#f4f1e9" />
+        <meta name="description" content="A simple news reader for stories from trusted sources." />
+        <link rel="preconnect" href="https://rss-news-api.onrender.com" crossorigin />
+        <link rel="preconnect" href="https://images.ctfassets.net" crossorigin />
+        <title>Newsroom — Stories for Today</title>
     </head>
     <body>
-        <header>
-            <h1>News Portal</h1>
+        <a class="skip-link" href="#main-content">Skip to main content</a>
+        <header class="masthead">
+            <div class="masthead__top">
+                <a class="wordmark" href="#top" aria-label="Newsroom home">
+                    <span class="wordmark__icon" aria-hidden="true">N</span>
+                    <span>NEWSROOM</span>
+                </a>
+                <p class="masthead__note">A clearer view of the day</p>
+            </div>
+
+            <div class="masthead__intro" id="top">
+                <p class="eyebrow">YOUR DAILY READING LIST</p>
+                <h1>Good Stories.<br /><span>Different Points of View.</span></h1>
+                <p class="masthead__lead">Pick a publication and catch up on what matters today.</p>
+            </div>
+
+            <div class="masthead__bottom">
+                <span>NEWS, WITH A LITTLE MORE CONTEXT</span>
+                <span>EST. <span class="copyright-year">2026</span></span>
+            </div>
         </header>
-        <main>
-            <div class="sources buttons"></div>
-            <div class="news"></div>
+
+        <main id="main-content" class="page-content">
+            <p class="demo-notice" hidden>Demo mode: showing sample news instead of live stories.</p>
+            <section class="source-section" aria-labelledby="sources-heading">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">01 / PUBLICATIONS</p>
+                        <h2 id="sources-heading">Choose a Source</h2>
+                    </div>
+                    <p class="section-heading__note">Scroll through the list, then select a publication.</p>
+                </div>
+                <div class="sources" aria-label="News sources"></div>
+            </section>
+
+            <section class="story-section" aria-labelledby="stories-heading">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">02 / THE LATEST</p>
+                        <h2 id="stories-heading">Top Stories</h2>
+                    </div>
+                    <p class="section-heading__note">A selection of recent articles from your source.</p>
+                </div>
+                <div class="news" aria-live="polite">
+                    <p class="news__empty">Choose a publication above to see its latest stories.</p>
+                </div>
+            </section>
         </main>
-        <footer>
-            <p class="copyright">
-                Copyright <a href="https://newsapi.org">NewsAPI</a>
-            </p>
+
+        <footer class="site-footer">
+            <div class="site-footer__inner">
+                <p class="site-footer__note">Made for curious minds.</p>
+                <a
+                    class="site-footer__author"
+                    href="https://github.com/KirilPark99/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Kiril on GitHub <span aria-hidden="true">↗</span>
+                </a>
+                <div class="site-footer__credits">
+                    <span>© <span class="copyright-year">2026</span> Newsroom</span>
+                    <a
+                        class="site-footer__school"
+                        href="https://rs.school/courses/javascript"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <img
+                            src="https://rs.school/_next/static/media/rss-logo.c19ce1b4.svg"
+                            alt="Rolling Scopes School JavaScript course"
+                            width="84"
+                            height="84"
+                            loading="lazy"
+                        />
+                    </a>
+                </div>
+            </div>
         </footer>
 
         <template id="sourceItemTemp">
-            <div class="source__item">
+            <button class="source__item" type="button">
                 <span class="source__item-name"></span>
-            </div>
+            </button>
         </template>
 
         <template id="newsItemTemp">
-            <div class="news__item">
-                <div class="news__meta">
-                    <div class="news__meta-photo"></div>
-                    <ul class="news__meta-details">
-                        <li class="news__meta-author"></li>
-                        <li class="news__meta-date"></li>
-                    </ul>
-                </div>
+            <article class="news__item">
+                <div class="news__meta-photo" aria-hidden="true"></div>
                 <div class="news__description">
-                    <h2 class="news__description-title"></h2>
-                    <h3 class="news__description-source"></h3>
+                    <div class="news__meta">
+                        <span class="news__meta-author"></span>
+                        <time class="news__meta-date"></time>
+                    </div>
+                    <p class="news__description-source"></p>
+                    <h3 class="news__description-title"></h3>
                     <p class="news__description-content"></p>
                     <p class="news__read-more">
-                        <a href="#">Read More</a>
+                        <a href="#" target="_blank" rel="noopener noreferrer">
+                            Read the Story <span aria-hidden="true">↗</span>
+                        </a>
                     </p>
                 </div>
-            </div>
+            </article>
         </template>
     </body>
 </html>

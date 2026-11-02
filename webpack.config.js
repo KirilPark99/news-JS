@@ -3,10 +3,9 @@ const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const DotenvWebpackPlugin = require('dotenv-webpack');
 
 const baseConfig = {
-    entry: path.resolve(__dirname, './src/index.js'),
+    entry: path.resolve(__dirname, './src/index.ts'),
     mode: 'development',
     module: {
         rules: [
@@ -29,7 +28,6 @@ const baseConfig = {
         path: path.resolve(__dirname, './dist'),
     },
     plugins: [
-        new DotenvWebpackPlugin(),
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, './src/index.html'),
             filename: 'index.html',
@@ -45,7 +43,8 @@ module.exports = ({ mode }) => {
     return merge(baseConfig, envConfig, {
         plugins: [
             new webpack.DefinePlugin({
-                __USE_API_MOCKS__: JSON.stringify(!isProductionMode),
+                __USE_API_MOCKS__: JSON.stringify(!isProductionMode || !process.env.NEWS_API_KEY),
+                __NEWS_API_KEY__: JSON.stringify(isProductionMode ? process.env.NEWS_API_KEY || '' : ''),
             }),
         ],
     });
